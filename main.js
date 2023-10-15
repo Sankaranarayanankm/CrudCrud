@@ -12,6 +12,8 @@ itemList.addEventListener("click",removeItem);
 itemList.addEventListener("click",editItem);
 
 
+
+
 // get value function
  function getValue(event) {
     event.preventDefault();
@@ -54,20 +56,73 @@ itemList.addEventListener("click",editItem);
     };
 
     // storage in cloud storage(CrudCrud) using axios
-    axios.post("https://crudcrud.com/api/de260e5992bc42588886a7d814d3c492/AppoinmentData",obj)
+    axios.post("https://crudcrud.com/api/623a100fd8eb4c7ab8591e5ac6e5914a/AppoinmentData",obj)
     .then(res=> console.log(res))
     .catch(err=>console.log(err));
 
     // storing in local storage
-    // obj_serialize=JSON.stringify(obj);
-    // localStorage.setItem(Inputname,obj_serialize);
+    obj_serialize=JSON.stringify(obj);
+    localStorage.setItem(Inputname,obj_serialize);
 
-    // let obj_deserialize=JSON.parse(localStorage.getItem("name"));
+    // let obj_deserialize=JSON.parse(locaflStorage.getItem("name"));
    
  }
 
- // function remove item
+//  function to read from local storage 
+window.addEventListener("DOMContentLoaded", ()=> {
+    // reading from crud crud 
 
+    axios.get("https://crudcrud.com/api/623a100fd8eb4c7ab8591e5ac6e5914a/AppoinmentData")
+    .then(res=> {
+        for(let i=0;i<res.data.length;i++){
+        showOutput(res.data[i]);
+        }
+    })
+    .catch(err=> console.log(err))
+
+
+    // const localStorageObj=localStorage;
+    // const localStorageKeys=Object.keys(localStorageObj);
+    // for(let i=0;i<localStorageKeys.length;i++){
+    //     let keys=localStorageKeys[i];
+    //     let userDetailsString=localStorageObj[keys];
+    //     let userDetailsObj=JSON.parse(userDetailsString);
+    //     showOutput(userDetailsObj);
+    }
+    
+)
+
+// function to show output in the screen 
+function showOutput(userDetailsObj) {
+    let name=userDetailsObj.name;
+    let email=userDetailsObj.email;
+    let phone=userDetailsObj.phoneNumber;
+    // console.log(name,email,phone)
+    let li=document.createElement("li")
+    let nameNode=document.createTextNode(name);
+    let emailNode=document.createTextNode(email);
+    let phoneNode=document.createTextNode(phone);
+
+    // creating delete button
+    let button= document.createElement('button');
+    button.className="delete";
+    button.appendChild(document.createTextNode("delete"));
+    
+    // creating edit button 
+    let edit=document.createElement("button");
+    edit.className="edit";
+    edit.appendChild(document.createTextNode("edit"));
+    
+    // appeding the text node to the li
+    li.append(nameNode,emailNode,phoneNode,button,edit);
+    li.appendChild(document.createElement("br"));
+
+    // appending li to itemlist
+    itemList.appendChild(li)
+}
+
+
+ // function remove item
 function removeItem(e){
     if(e.target.classList.contains("delete")){
         let li=e.target.parentElement;
