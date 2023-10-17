@@ -9,7 +9,7 @@ form.addEventListener("submit" ,getValue);
 // itemList.addEventListener("click",removeItem);
 
 // adding edit event
-itemList.addEventListener("click",editItem);
+// itemList.addEventListener("click",editItem);
 
 
 
@@ -56,13 +56,13 @@ itemList.addEventListener("click",editItem);
     };
 
     
-    // storing in local storage
-    obj_serialize=JSON.stringify(obj);
-    localStorage.setItem(Inputname,obj_serialize);
+    // // storing in local storage
+    // obj_serialize=JSON.stringify(obj);
+    // localStorage.setItem(Inputname,obj_serialize);
 
 
     // storage in cloud storage(CrudCrud) using axios
-    axios.post("https://crudcrud.com/api/5bf4123a86234f0d8fa537b9223d8193/AppoinmentData",obj)
+    axios.post("https://crudcrud.com/api/5863dc111d604c0a84c15a258dcc7513/AppoinmentData",obj)
     .then(res=> console.log(res))
     .catch(err=>console.log(err));
 
@@ -75,29 +75,17 @@ itemList.addEventListener("click",editItem);
 window.addEventListener("DOMContentLoaded", ()=> {
     // reading from crud crud 
 
-    axios.get("https://crudcrud.com/api/5bf4123a86234f0d8fa537b9223d8193/AppoinmentData")
+    axios.get("https://crudcrud.com/api/5863dc111d604c0a84c15a258dcc7513/AppoinmentData")
     .then(res=> {
         for(let i=0;i<res.data.length;i++){
         showOutput(res.data[i]);
         }
     })
-    // .catch(err=> console.log(err))
-    
-
-    // const localStorageObj=localStorage;
-    // const localStorageKeys=Object.keys(localStorageObj);
-    // for(let i=0;i<localStorageKeys.length;i++){
-    //     let keys=localStorageKeys[i];
-    //     let userDetailsString=localStorageObj[keys];
-    //     let userDetailsObj=JSON.parse(userDetailsString);
-    //     showOutput(userDetailsObj);
-    // }
-});
+})
     
 
 // function to show output in the screen 
 function showOutput(userDetailsObj) {
-    console.log(userDetailsObj.name)
     
     let name=userDetailsObj.name;
     let email=userDetailsObj.email;
@@ -121,7 +109,7 @@ function showOutput(userDetailsObj) {
     // creating edit button 
     let edit=document.createElement("button");
     edit.className="edit";
-    edit.onclick= ()=> editItem(name);
+    edit.onclick= (event)=> editItem(event,name,email,phone,id);
     edit.appendChild(document.createTextNode("edit"));
     
     // appeding the text node to the li
@@ -131,16 +119,15 @@ function showOutput(userDetailsObj) {
     // appending li to itemlist
     itemList.appendChild(li)
 
-
-
-}
+};
 
 
  // function remove item
  function removeItem(event, id) {
     if (event.target.classList.contains("delete")) {
-        axios.delete(`https://crudcrud.com/api/5bf4123a86234f0d8fa537b9223d8193/AppoinmentData/${id}`)
-        .then(res=>console.log(res));
+        axios.delete(`https://crudcrud.com/api/5863dc111d604c0a84c15a258dcc7513/AppoinmentData/${id}`)
+        .then(res=>console.log(res))
+        .catch(err=>console.log(err));
         let li = event.target.parentElement;
         itemList.removeChild(li);
     }
@@ -148,23 +135,24 @@ function showOutput(userDetailsObj) {
 
    
 // edit item function 
-function editItem(e){
-    if(e.target.classList.contains("edit")){
-        let li=e.target.parentElement;
+function editItem(event,name,email,phone,id){
+    if(event.target.classList.contains("edit")){
+
+        document.getElementById("name").value=name;
+        document.getElementById("email").value=email;
+        document.getElementById("phone").value=phone;
+
+        let li=event.target.parentElement;
         itemList.removeChild(li);
-
-        // removing item from local storage
-        let itemName = li.childNodes[0].textContent;
-        let Inputname = document.getElementById('name');
-        let email = document.getElementById('email');
-        let phone = document.getElementById('phone');
-
-        Inputname.value = li.childNodes[0].textContent;
-        
-        Inputname.value= li.childNodes[0].textContent;
-        email.value=li.childNodes[1].textContent;
-        phone.value=li.childNodes[2].textContent;
-
-        localStorage.removeItem(itemName);
-}
+    }
+    
+    let obj={
+        "name":document.getElementById("name").value,
+        "email":document.getElementById("email").value,
+        "phone":document.getElementById("phone").value
+    }
+    console.log(obj,id);
+    axios.post(`https://crudcrud.com/api/5863dc111d604c0a84c15a258dcc7513/AppoinmentData/${id}`,obj)
+    .then(res=>console.log(res))
+    .catch(err=>console.log(err));
 }
